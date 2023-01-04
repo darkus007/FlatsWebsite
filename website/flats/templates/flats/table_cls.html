@@ -1,0 +1,44 @@
+{% extends 'flats/base.html' %}
+
+{% block content %}
+	<table class="table table-hover">
+	  <thead>
+		<tr>
+		  <th scope="col">ID</th>
+		  <th scope="col">ЖК</th>
+		  <th scope="col"><a href="#">Комнат</a></th>
+		  <th scope="col">Площадь</th>
+		  <th scope="col">Этаж</th>
+		  <th scope="col">Цена</th>
+		  <th scope="col">Заселение</th>
+		  <th scope="col">Адрес/На сайт застройщика</th>
+		</tr>
+	  </thead>
+	  <tbody>
+
+	  	{% for flat in flats %}
+		<tr>
+		  <th scope="row">{{ flat.pk }}</th>
+		  <td>{{ flat.project.name }}</td>
+		  <td>{% if flat.rooms == -1 %}
+			  Студия
+			  {% else %}
+			  {{ flat.rooms }}
+			  {% endif %}
+		  </td>
+		  <td>{{ flat.area }}</td>
+		  <td>{{ flat.floor }}</td>
+		  <td>{{ flat.prices__price }}</td>
+		  <td>{% if flat.settlement_date %}
+			  {{ flat.settlement_date|date:"d-m-Y" }}
+			  {% else %}
+			  Не указано
+			  {% endif %}
+		  </td>
+		  <td><a href="{{ flat.project__url }}{{ flat.url_suffix }}">{{ flat.address|truncatewords:7 }}</a></td>
+		</tr>
+	  	{% endfor %}
+
+	  </tbody>
+	</table>
+{% endblock %}
