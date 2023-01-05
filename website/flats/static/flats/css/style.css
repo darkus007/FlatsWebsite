@@ -40,12 +40,14 @@ p, ul, ol {
 ul, ol {
 }
 
-a {
+a, a:not([href]):not([class]) {
 	text-decoration: none;
 	color: #3E3530;
 }
 
-a:hover {
+a:hover, a:not([href]):not([class]):hover {
+    color: #3E3530;
+    cursor: pointer;
 }
 
 #wrapper {
@@ -87,14 +89,14 @@ a:hover {
 	padding: 0px 0 0 2px;
 	font: normal 14px Georgia, "Times New Roman", Times, serif;
 	font-style: italic;
-	color: #000000;
+	color: #3E3530;
 } 
 
 #logo a {
 	border: none;
 	background: none;
 	text-decoration: none;
-	color: #000000;
+	color: #3E3530;
 }
 
 /* Search */
@@ -184,23 +186,23 @@ a:hover {
 #page {
 	width: 1000px;
 	margin: 0 auto;
-	background: url('../images/img04.png') repeat-y left top;
+	background: url('../images/img041.png') repeat-y left top;
 	padding: 0px;
 }
 
 #page-bgtop {
-	background: url('../images/img03.png') no-repeat left top;
+	background: url('../images/img031.png') no-repeat left top;
 }
 
 #page-bgbtm {
-	background: url('../images/img05.pmg') no-repeat left bottom;
+	background: url('../images/img051.png') no-repeat left bottom;
 }
 
 /* Content */
 
 #content {
 	float: right;
-	width: 620px;
+	width: 720px;
 	padding: 20px 10px 0px 0px;
 }
 
@@ -256,7 +258,7 @@ a:hover {
 
 #sidebar {
 	float: left;
-	width: 370px;
+	width: 270px;
 	margin: 0px;
 	padding: 0px 0px 0px 0px;
 	color: #787878;
@@ -300,6 +302,7 @@ a:hover {
 	padding-top: 13px;
 	padding-left: 50px;
 	margin-bottom: 10px;
+	margin-top: 20px;
 	background: url('../images/img06.png') no-repeat left 4px;
 	letter-spacing: -.5px;
 	font-size: 1.8em;
@@ -364,4 +367,18 @@ a:hover {
 
 #footer a {
 	color: #FFFFFF;
+}
+
+.cls-button {
+    display: flex;
+    justify-content: left;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+}
+
+.space {
+    width: 100px;
 }

@@ -1,11 +1,12 @@
 from django.conf.urls.static import static
 from django.urls import path, include
 
-from flats.views import IndexList
+from flats.views import IndexList, FlatDetailView
 from website import settings
 
 urlpatterns = [
     path('', IndexList.as_view(), name='index'),
+    path('flat/<int:flatid>/', FlatDetailView.as_view(), name='flat-detail'),
 ]
 
 if settings.DEBUG:

@@ -5,13 +5,12 @@
 	  <thead>
 		<tr>
 		  <th scope="col">ID</th>
-		  <th scope="col">ЖК</th>
-		  <th scope="col"><a href="#">Комнат</a></th>
-		  <th scope="col">Площадь</th>
-		  <th scope="col">Этаж</th>
+		  <th scope="col">ЖК,<br>На сайт застройщика</th>
+		  <th scope="col">Комнат,<br>Площадь,<br>Этаж</th>
+		  <th scope="col">Бронь</th>
 		  <th scope="col">Цена</th>
 		  <th scope="col">Заселение</th>
-		  <th scope="col">Адрес/На сайт застройщика</th>
+		  <th scope="col">Адрес,<br>Подробно о квартире</th>
 		</tr>
 	  </thead>
 	  <tbody>
@@ -19,26 +18,54 @@
 	  	{% for flat in flats %}
 		<tr>
 		  <th scope="row">{{ flat.pk }}</th>
-		  <td>{{ flat.project.name }}</td>
+		  <td><a href="{{ flat.project.url }}{{ flat.url_suffix }}">{{ flat.project.name }}</a></td>
 		  <td>{% if flat.rooms == -1 %}
-			  Студия
+			  Студия,
 			  {% else %}
-			  {{ flat.rooms }}
+			  {{ flat.rooms }} к,
+			  {% endif %}
+			  <br> {{ flat.area }} м,
+			  <br> {{ flat.floor }} этаж
+		  </td>
+		  <td>{% if flat.prices.first.booking_status == 'reserve' %}
+			  Бронь
+			  {% elif flat.prices.first.booking_status == 'active' %}
+			  Свободна
+			  {% else %}
+			  {{ flat.prices.first.booking_status }}
 			  {% endif %}
 		  </td>
-		  <td>{{ flat.area }}</td>
-		  <td>{{ flat.floor }}</td>
-		  <td>{{ flat.prices__price }}</td>
+		  <td>{{ flat.prices.first.price }}</td>
 		  <td>{% if flat.settlement_date %}
 			  {{ flat.settlement_date|date:"d-m-Y" }}
 			  {% else %}
 			  Не указано
 			  {% endif %}
 		  </td>
-		  <td><a href="{{ flat.project__url }}{{ flat.url_suffix }}">{{ flat.address|truncatewords:7 }}</a></td>
+		  <td><a href="{{ flat.get_absolute_url }}">{{ flat.address|truncatewords:7 }}</a></td>
+<!--		  <td>{{ flat.prices.first.data_created }}</td>-->
 		</tr>
 	  	{% endfor %}
 
 	  </tbody>
 	</table>
+
+	<div class="pagination">
+		<span class="step-links">
+			{% if page_obj.has_previous %}
+				<a href="?page=1">&laquo; Первая </a>|
+				<a href="?page={{ page_obj.previous_page_number }}"> Предыдущая </a>|
+			{% endif %}
+
+			<span class="current">
+				Страницы {{ page_obj.number }} из {{ page_obj.paginator.num_pages }} |
+			</span>
+
+			{% if page_obj.has_next %}
+				<a href="?page={{ page_obj.next_page_number }}"> Следующая </a>|
+				<a href="?page={{ page_obj.paginator.num_pages }}"> Последняя &raquo;</a>
+			{% endif %}
+		</span>
+	</div>
+
 {% endblock %}

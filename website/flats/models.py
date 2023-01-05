@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 
 class Projects(models.Model):
@@ -35,6 +36,9 @@ class Flats(models.Model):
     data_closed = models.DateField(null=True, blank=True, verbose_name='Снята с продажи')
 
     project = models.ForeignKey('Projects', on_delete=models.PROTECT)
+
+    def get_absolute_url(self):
+        return reverse('flat-detail', kwargs={'flatid': self.pk})
 
     class Meta:
         verbose_name_plural = 'Квартиры'
