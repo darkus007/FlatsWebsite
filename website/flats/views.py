@@ -1,6 +1,6 @@
 from django.views.generic import ListView, DetailView
 
-from flats.models import Flats
+from flats.models import Flats, Prices, AllFlatsLastPrice
 
 
 class IndexList(ListView):
@@ -9,20 +9,28 @@ class IndexList(ListView):
     context_object_name = 'flats'  # вместо objects_list
     paginate_by = 50
 
-    # queryset = Flats.objects.filter(rooms=1).select_related('project').prefetch_related('prices')[:20]
-
-    # Переопределяем запрос в базу данных
     def get_queryset(self):
-        return Flats.objects.select_related('project').prefetch_related('prices') \
-                   .order_by('-prices__data_created', 'prices__price')
+        return AllFlatsLastPrice.objects.filter(rooms=1)
 
 
 class FlatDetailView(DetailView):
     model = Flats
     template_name = 'flats/flat_detail.html'
-    context_object_name = 'flat'
+    context_object_name = 'flats'
     # slug_url_kwarg = 'flatslug'
     pk_url_kwarg = 'flatid'
 
     def get_queryset(self):
-        return Flats.objects.filter(pk=self.kwargs['flatid']).select_related('project').prefetch_related('prices')
+        return Flats.objects.values(
+            'address', 'rooms', 'area', 'floor', 'finishing', 'settlement_date', 'url_suffix',
+            'project__name', 'project__url'
+        ).filter(pk=self.kwargs['flatid'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['prices'] = Prices.objects.values(
+            'flat', 'data_created',
+            'price', 'booking_status',
+            'benefit_name', 'benefit_description'
+        ).filter(flat=self.kwargs['flatid']).order_by('-data_created')
+        return context

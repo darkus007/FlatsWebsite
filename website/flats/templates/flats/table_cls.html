@@ -1,56 +1,65 @@
 {% extends 'flats/base.html' %}
 
 {% block content %}
-	<table class="table table-hover">
-	  <thead>
-		<tr>
-		  <th scope="col">ID</th>
-		  <th scope="col">ЖК,<br>На сайт застройщика</th>
-		  <th scope="col">Комнат,<br>Площадь,<br>Этаж</th>
-		  <th scope="col">Бронь</th>
-		  <th scope="col">Цена</th>
-		  <th scope="col">Заселение</th>
-		  <th scope="col">Адрес,<br>Подробно о квартире</th>
-		</tr>
-	  </thead>
-	  <tbody>
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Город, ЖК,<br>На сайт застройщика</th>
+        <th scope="col">Комнат,<br>Площадь,<br>Этаж</th>
+        <th scope="col">Бронь</th>
+        <th scope="col">Цена</th>
+        <th scope="col">Заселение</th>
+        <th scope="col">Адрес,<br>Подробно о квартире</th>
+    </tr>
+    </thead>
+    <tbody>
 
-	  	{% for flat in flats %}
-		<tr>
-		  <th scope="row">{{ flat.pk }}</th>
-		  <td><a href="{{ flat.project.url }}{{ flat.url_suffix }}">{{ flat.project.name }}</a></td>
-		  <td>{% if flat.rooms == -1 %}
-			  Студия,
-			  {% else %}
-			  {{ flat.rooms }} к,
-			  {% endif %}
-			  <br> {{ flat.area }} м,
-			  <br> {{ flat.floor }} этаж
-		  </td>
-		  <td>{% if flat.prices.first.booking_status == 'reserve' %}
-			  Бронь
-			  {% elif flat.prices.first.booking_status == 'active' %}
-			  Свободна
-			  {% else %}
-			  {{ flat.prices.first.booking_status }}
-			  {% endif %}
-		  </td>
-		  <td>{{ flat.prices.first.price }}</td>
-		  <td>{% if flat.settlement_date %}
-			  {{ flat.settlement_date|date:"d-m-Y" }}
-			  {% else %}
-			  Не указано
-			  {% endif %}
-		  </td>
-		  <td><a href="{{ flat.get_absolute_url }}">{{ flat.address|truncatewords:7 }}</a></td>
-<!--		  <td>{{ flat.prices.first.data_created }}</td>-->
-		</tr>
-	  	{% endfor %}
+    {% for flat in flats %}
+    <tr>
+        <th scope="row">{{ flat.flat_id }}</th>
+        <td><a href="{{ flat.url }}{{ flat.url__suffix }}">{{ flat.city }},<br>{{ flat.name }}</a></td>
+        <td>{% if flat.rooms == -1 %}
+            Студия,
+            {% else %}
+            {{ flat.rooms }} к,
+            {% endif %}
+            <br> {{ flat.area }} м,
+            <br> {{ flat.floor }} этаж
+        </td>
 
-	  </tbody>
-	</table>
+        <td>{% if flat.booking_status == 'reserve' %}
+            Бронь
+            {% elif flat.booking_status == 'active' %}
+            Свободна
+            {% else %}
+            {{ flat.booking_status }}
+            {% endif %}
+        </td>
+        <td>{{ flat.price }}</td>
+        <td>{% if flat.settlement_date %}
+            {{ flat.settlement_date|date:"d-m-Y" }}
+            {% else %}
+            Не указано
+            {% endif %}
+        </td>
+        <td><a href="{{ flat.get_absolute_url }}">{{ flat.address|truncatewords:7 }}
+            {% if flat.finishing %}
+                С отделкой.
+            {% else %}
+                Без отделки.
+            {% endif %}
+            </a>
+        </td>
 
-	<div class="pagination">
+
+    </tr>
+    {% endfor %}
+
+    </tbody>
+</table>
+
+<div class="pagination">
 		<span class="step-links">
 			{% if page_obj.has_previous %}
 				<a href="?page=1">&laquo; Первая </a>|
@@ -66,6 +75,6 @@
 				<a href="?page={{ page_obj.paginator.num_pages }}"> Последняя &raquo;</a>
 			{% endif %}
 		</span>
-	</div>
+</div>
 
 {% endblock %}
