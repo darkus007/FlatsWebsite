@@ -98,3 +98,4 @@ class AllFlatsLastPrice(models.Model):
     class Meta:
         managed = False     # не будет создавать и применять миграции
         db_table = 'all_flats_last_price'
+        ordering = ['price']

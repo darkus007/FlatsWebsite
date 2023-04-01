@@ -1,5 +1,8 @@
 {% extends 'flats/base.html' %}
 
+{% load humanize %}
+{% load filters %}
+
 {% block content %}
 	<h1>{{ flats.project__name }}</h1>
 	<br>
@@ -42,10 +45,10 @@
 		<tr>
 <!--		  <th scope="row">{{ price.flat }}</th>-->
 		  <th scope="row" width="80">{{ price.data_created|date:"d-m-Y" }}</th>
-		  <td>{{ price.price }}</td>
+		  <td>{{ price.price|intcomma }} руб.</td>
 		  <td>{{ price.booking_status }}</td>
 		  <td>{{ price.benefit_name }}</td>
-		  <td>{{ price.benefit_description }}</td>
+		  <td>{{ price.benefit_description|replace_n }}</td>
 		</tr>
 	  	{% endfor %}
 

@@ -1,5 +1,7 @@
 {% extends 'flats/base.html' %}
 
+{% load humanize %}
+
 {% block content %}
 <table class="table table-hover">
     <thead>
@@ -36,7 +38,7 @@
             {{ flat.booking_status }}
             {% endif %}
         </td>
-        <td width="80">{{ flat.price }}</td>
+        <td width="80">{{ flat.price|intcomma }} руб.</td>
         <td>{% if flat.settlement_date %}
             {{ flat.settlement_date|date:"d-m-Y" }}
             {% else %}
