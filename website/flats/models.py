@@ -84,6 +84,7 @@ class AllFlatsLastPrice(models.Model):
     settlement_date = models.DateField(null=True, blank=True, verbose_name='Заселение')
     url_suffix = models.CharField(max_length=127, verbose_name='Продолжение URL к адресу ЖК')
 
+    project_id = models.IntegerField(unique=True)
     city = models.CharField(max_length=127, verbose_name='Город')
     name = models.CharField(max_length=127, verbose_name='ЖК')
     url = models.CharField(max_length=255, verbose_name='URL')
@@ -97,17 +98,3 @@ class AllFlatsLastPrice(models.Model):
     class Meta:
         managed = False     # не будет создавать и применять миграции
         db_table = 'all_flats_last_price'
-
-# CREATE VIEW all_flats_last_price AS
-# SELECT flats.flat_id, flats.address, flats.rooms, flats.area, flats.finishing, flats.settlement_date, flats.url_suffix,
-# 	projects.name, projects.city, projects.url,
-# 	prices.price, prices.booking_status, prices.data_created
-# FROM flats
-# INNER JOIN projects ON flats.project_id = projects.project_id
-# INNER JOIN prices ON prices.flat_id = flats.flat_id
-# INNER JOIN (
-# 	SELECT flat_id, max(data_created) AS max_data
-# 	FROM prices
-# 	GROUP BY flat_id
-# ) AS last_price ON last_price.flat_id = prices.flat_id
-# WHERE prices.data_created = last_price.max_data;

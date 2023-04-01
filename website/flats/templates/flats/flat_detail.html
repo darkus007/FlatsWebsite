@@ -28,7 +28,7 @@
 	<table class="table table-hover">
 	  <thead>
 		<tr>
-		  <th scope="col">ID</th>
+<!--		  <th scope="col">ID</th>-->
 		  <th scope="col">Дата</th>
 		  <th scope="col">Цена</th>
 		  <th scope="col">Бронь</th>
@@ -40,8 +40,8 @@
 
 	  	{% for price in prices %}
 		<tr>
-		  <th scope="row">{{ price.flat }}</th>
-		  <td>{{ price.data_created|date:"d-m-Y" }}</td>
+<!--		  <th scope="row">{{ price.flat }}</th>-->
+		  <th scope="row" width="80">{{ price.data_created|date:"d-m-Y" }}</th>
 		  <td>{{ price.price }}</td>
 		  <td>{{ price.booking_status }}</td>
 		  <td>{{ price.benefit_name }}</td>

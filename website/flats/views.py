@@ -10,7 +10,7 @@ class IndexList(ListView):
     paginate_by = 50
 
     def get_queryset(self):
-        return AllFlatsLastPrice.objects.filter(rooms=1)
+        return AllFlatsLastPrice.objects.all()
 
 
 class FlatDetailView(DetailView):
@@ -34,3 +34,13 @@ class FlatDetailView(DetailView):
             'benefit_name', 'benefit_description'
         ).filter(flat=self.kwargs['flatid']).order_by('-data_created')
         return context
+
+
+class ProjectListView(ListView):
+    model = Flats
+    template_name = 'flats/table_cls.html'
+    context_object_name = 'flats'  # вместо objects_list
+    paginate_by = 50
+
+    def get_queryset(self):
+        return AllFlatsLastPrice.objects.filter(project_id=self.kwargs['project_id'])

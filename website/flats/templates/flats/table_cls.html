@@ -4,7 +4,7 @@
 <table class="table table-hover">
     <thead>
     <tr>
-        <th scope="col">ID</th>
+<!--        <th scope="col">ID</th>-->
         <th scope="col">Город, ЖК,<br>На сайт застройщика</th>
         <th scope="col">Комнат,<br>Площадь,<br>Этаж</th>
         <th scope="col">Бронь</th>
@@ -17,8 +17,8 @@
 
     {% for flat in flats %}
     <tr>
-        <th scope="row">{{ flat.flat_id }}</th>
-        <td><a href="{{ flat.url }}{{ flat.url__suffix }}">{{ flat.city }},<br>{{ flat.name }}</a></td>
+<!--        <th scope="row">{{ flat.flat_id }}</th>-->
+        <th scope="row"><a target="_blank" href="{{ flat.url }}{{ flat.url__suffix }}">{{ flat.city }},<br>{{ flat.name }}</a></th>
         <td>{% if flat.rooms == -1 %}
             Студия,
             {% else %}
@@ -36,7 +36,7 @@
             {{ flat.booking_status }}
             {% endif %}
         </td>
-        <td>{{ flat.price }}</td>
+        <td width="80">{{ flat.price }}</td>
         <td>{% if flat.settlement_date %}
             {{ flat.settlement_date|date:"d-m-Y" }}
             {% else %}
@@ -51,11 +51,8 @@
             {% endif %}
             </a>
         </td>
-
-
     </tr>
     {% endfor %}
-
     </tbody>
 </table>
 

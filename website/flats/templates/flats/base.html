@@ -12,7 +12,7 @@
 	<div id="header-wrapper">
 	<div id="header">
 		<div id="logo">
-			<h1><a href="#">Сайт по подбору квартир</a></h1>
+			<h1><a href="{% url 'index' %}">Сайт по подбору квартир</a></h1>
 			<p>Найди свою квартиру здесь!</p>
 		</div>
 	</div>
@@ -46,12 +46,10 @@
 				<li>
 					<h2>Жилые комплексы</h2>
 					<ul>
-						<li><a href="#">Aliquam libero</a></li>
-						<li><a href="#">Consectetuer adipiscing elit</a></li>
-						<li><a href="#">Metus aliquam pellentesque</a></li>
-						<li><a href="#">Suspendisse iaculis mauris</a></li>
-						<li><a href="#">Urnanet non molestie semper</a></li>
-						<li><a href="#">Proin gravida orci porttitor</a></li>
+						<li><a href="{% url 'index' %}">Все комплексы</a></li>
+						{% for project in projects %}
+							<li><a href="{% url 'project-list' project.project_id %}">{{ project.name }}</a></li>
+						{% endfor %}
 					</ul>
 				</li>
 			</ul>
