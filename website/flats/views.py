@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from django.views.generic import ListView, DetailView
 
 from flats.models import Flats, Prices, AllFlatsLastPrice
@@ -44,3 +45,7 @@ class ProjectListView(ListView):
 
     def get_queryset(self):
         return AllFlatsLastPrice.objects.filter(project_id=self.kwargs['project_id'])
+
+
+def pageNotFound(request, exception):
+    return render(request, 'flats/base.html')

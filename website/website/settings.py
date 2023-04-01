@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -53,6 +53,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     "debug_toolbar.middleware.DebugToolbarMiddleware",
+
+    'flats.middlewares.MiddlewareAllException',
 ]
 
 ROOT_URLCONF = 'website.urls'
@@ -139,3 +141,93 @@ MEDIA_URL = '/media/'
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+
+# настраиваем отправку писем
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # выводит в командной строке
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # отправляет на почтовый сервер
+DEFAULT_FROM_EMAIL = 'flats@mail.ru'
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 1025
+# EMAIL_HOST_USER = 'user'                                         # логин для SMTP-сервера, по умолчанию пустая строка
+# EMAIL_HOST_PASSWORD = 'password'                                 # пароль для SMTP-сервера, по умолчанию пустая строка
+ADMINS = [  # админы, которым будут отправлены письма методом mail_admins
+    ('admin', 'admin@mail.ru'),
+]
+SERVER_EMAIL = 'flats_from@email.ru'  # адрес почты с которой будут отправлены письма
+
+
+# настраиваем логирование
+LOGGING = {
+    'version': 1,
+    'disable_existing_logger': True,    # отключаем все регистраторы, используемые по умолчанию
+
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+
+    'formatters': {
+        'simple': {
+            'format': '[%(asctime)s] %(levelname)s: %(message)s',   # формат сообщения
+            'datefmt': '%Y.%m.%d %H:%M:%S',                         # формат временной метки
+        }
+    },
+
+    'handlers': {
+        'console_dev': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+            'filters': ['require_debug_true'],
+        },
+        'console_prod': {
+            'level': 'WARNING',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+            'filters': ['require_debug_false'],
+        },
+        'file': {
+            'level': 'WARNING',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': 'logs/website.log',
+            'maxBytes': 1048576,
+            'backupCount': 10,
+            'formatter': 'simple',
+            'filters': ['require_debug_false'],
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'filters': ['require_debug_false']
+        }
+    },
+
+    'loggers': {
+        'django': {                 # собирает сообщения от всех подсистем фреймворка
+            'level': 'INFO',
+            'handlers': ['console_dev', 'console_prod'],
+        },
+        'django.server': {          # собирает сообщения от подсистемы обработки запросов и формирования ответов
+            'level': 'WARNING',
+            'handlers': ['file'],
+            'propagate': True,
+        },
+        # 'django.db.backends': {      # собирает сообщения обо всех операциях с базой данных сайта
+        #     'handlers': ['console_dev'],
+        #     'level': 'DEBUG',       # DEBUG - по умолчанию
+        # }
+
+        # добавлен регистратора, который объявлен в файле flats/middleware.py
+        # logger = logging.getLogger(__name__), где __name__ = 'flats.middlewares'
+        'flats.middlewares': {
+            'level': 'WARNING',
+            'handlers': ['file', 'console_dev', 'mail_admins'],
+            'propagate': False,
+        },
+    }
+}
