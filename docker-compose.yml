@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+
+  website:
+    build: .
+    container_name: flats_website
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    env_file:
+      - env.dev
+    depends_on:
+      - postgres_db
+
+  postgres_db:
+    image: postgres:15.2-alpine
+    container_name: postgres_flats
+    restart: always
+    volumes:
+      - ./init_view_in_db.sql:/docker-entrypoint-initdb.d/init_view_in_db.sql
+      - volume_flats:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+volumes:
+  volume_flats:

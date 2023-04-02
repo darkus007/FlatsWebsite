@@ -47,5 +47,5 @@ class ProjectListView(ListView):
         return AllFlatsLastPrice.objects.filter(project_id=self.kwargs['project_id'])
 
 
-def pageNotFound(request, exception):
+def page_not_found(request, exception):
     return render(request, 'flats/base.html')

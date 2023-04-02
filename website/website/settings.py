@@ -86,11 +86,11 @@ WSGI_APPLICATION = 'website.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': getenv('DB_NAME'),
-        'USER': getenv('DB_USER'),
-        'PASSWORD': getenv('DB_PASSWORD'),
-        'HOST': getenv('DB_HOST'),
-        'PORT': getenv('DB_PORT'),
+        'NAME': getenv('POSTGRES_DB'),
+        'USER': getenv('POSTGRES_USER'),
+        'PASSWORD': getenv('POSTGRES_PASSWORD'),
+        'HOST': getenv('POSTGRES_HOST'),
+        'PORT': getenv('POSTGRES_PORT'),
     }
 }
 
@@ -230,5 +230,17 @@ LOGGING = {
             'handlers': ['file', 'console_dev', 'mail_admins'],
             'propagate': False,
         },
+    }
+}
+
+# Настройки кэширования
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'TIMEOUT': 300,  # время хранения кэша (300 секунд (5 минут) - по умолчанию)
+        'OPTIONS': {
+            'MAX_ENTRIES': 300,  # количество записей кэша (300 - по умолчанию)
+            'CULL_FREQUENCY': 2,  # часть кэша, которая будет очищена (0 - весь кэш, 2 - половина, 3 - треть ...)
+        }
     }
 }
