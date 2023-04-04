@@ -96,6 +96,6 @@ class AllFlatsLastPrice(models.Model):
         return reverse('flat-detail', kwargs={'flatid': self.flat_id})
 
     class Meta:
-        managed = False     # не будет создавать и применять миграции
+        managed = False     # не будет применять миграции
         db_table = 'all_flats_last_price'
         ordering = ['price']
