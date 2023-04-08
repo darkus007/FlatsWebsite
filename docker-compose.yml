@@ -18,7 +18,7 @@ services:
     container_name: postgres_flats
     restart: always
     volumes:
-      - ./init_view_in_db.sql:/docker-entrypoint-initdb.d/init_view_in_db.sql
+      - ./init_tables_and_view.sql:/docker-entrypoint-initdb.d/init_tables_and_view.sql
       - volume_flats:/var/lib/postgresql/data/
     environment:
       - POSTGRES_DB=postgres

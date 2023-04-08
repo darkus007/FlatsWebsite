@@ -4,7 +4,7 @@ from django.core.cache import cache
 from django.shortcuts import render
 
 from website.settings import DEBUG
-from .models import Projects
+from .models import Project
 
 logger = logging.getLogger(__name__)
 
@@ -77,5 +77,5 @@ class MiddlewareAllException:
 
 def projects(request):
     """ Добавляет информацию о проектах на главной странице """
-    _projects = cache.get_or_set('projects', Projects.objects.values('name', 'project_id'), 300)     # 5 минут
+    _projects = cache.get_or_set('projects', Project.objects.values('name', 'project_id'), 300)     # 5 минут
     return {'projects': _projects}

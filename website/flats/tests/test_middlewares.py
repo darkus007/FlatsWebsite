@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.test.utils import CaptureQueriesContext
 from django.core.cache import cache
 
-from flats.models import Projects
+from flats.models import Project
 from flats.middlewares import projects
 
 
@@ -15,7 +15,7 @@ class MiddlewaresTestsCase(TestCase):      # python manage.py test flats.tests.t
 
         settings.SECRET_KEY = "$ecret_key_for_@ny_te$t$!"
 
-        cls.project = Projects.objects.create(
+        cls.project = Project.objects.create(
             project_id=1,
             city='Moscow',
             name='City',
