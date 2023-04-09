@@ -51,7 +51,7 @@ class Flat(models.Model):
 
 class Price(models.Model):
     """ Таблица с информацией о ценах на Квартиру. """
-    price_id = models.IntegerField(primary_key=True)
+    price_id = models.BigAutoField(primary_key=True)
     benefit_name = models.CharField(null=True, blank=True, max_length=127, verbose_name='Ценовое предложение')
     benefit_description = models.CharField(null=True, blank=True, max_length=255, verbose_name='Описание')
     price = models.IntegerField(verbose_name='Цена')
