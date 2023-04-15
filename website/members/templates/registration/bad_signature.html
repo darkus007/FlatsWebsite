@@ -1,0 +1,10 @@
+{% extends 'flats/base.html' %}
+
+{% block content %}
+    <br>
+    <h3>Подтверждение e-mail адреса</h3>
+    <br>
+    <p>Активация пользователя с таким e-mail прошла неудачно.<br>
+        <p><a href="{% url 'billboard:register' %}">Отправить сообщение активации e-mail повторно.</a></p>
+    </p>
+{% endblock %}

@@ -391,3 +391,14 @@ a:hover, a:not([href]):not([class]):hover {
 .errorlist {
     color: #F92B15;
 }
+
+.success {
+    color: black;
+    background-color: #5ec137;
+    padding-left: 10px;
+    margin-right: 10px;
+}
+
+.underline {
+    text-decoration: underline;
+}

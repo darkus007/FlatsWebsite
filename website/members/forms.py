@@ -4,10 +4,11 @@ from django import forms
 from captcha.fields import CaptchaField
 
 from .models import FlatsUser
+from .signals import user_registered
 
 
 class UserRegistrationForm(UserCreationForm):
-    """ Стилизуем форму регистрации пользователя. """
+    """ Форма регистрации пользователя. """
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
     first_name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control'}),
                                  label='Имя')
@@ -16,9 +17,19 @@ class UserRegistrationForm(UserCreationForm):
     captcha = CaptchaField(label='Введите текст с картинки',
                            error_messages={'invalid': 'Неверно указан текст с картинки'})
 
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.is_active = False
+        user.is_activated = False
+        if commit:
+            user.save()
+        # Можно обойтись без использования сигнала, вызвав напрямую
+        # функцию send_activation_notification(user)
+        user_registered.send(UserRegistrationForm, instance=user)
+        return user
+
     class Meta:
         model = FlatsUser
-        # fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')
         fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2', 'captcha')
         labels = {'username': 'Логин'}
 
@@ -30,7 +41,7 @@ class UserRegistrationForm(UserCreationForm):
 
 
 class EditUserForm(UserChangeForm):
-    """ Стилизуем форму обновления профиля пользователя. """
+    """ Форма обновления профиля пользователя. """
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
     first_name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control'}), label='Имя')
     last_name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control'}),
@@ -43,7 +54,7 @@ class EditUserForm(UserChangeForm):
 
 
 class UserPasswordChangeForm(PasswordChangeForm):
-    """ Стилизуем форму смены пароля пользователя. """
+    """ Форма смены пароля пользователя. """
     old_password = forms.CharField(max_length=100,
                                    widget=forms.PasswordInput(attrs={'class': 'form-control', 'type': 'password'}),
                                    label='Старый пароль')

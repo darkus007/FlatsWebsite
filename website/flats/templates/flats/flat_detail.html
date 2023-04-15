@@ -52,5 +52,32 @@
 
 	  </tbody>
 	</table>
-	<br><br>
+	<br>
+
+	{% if messages %}
+		{% for message in messages %}
+		<p {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+			{{ message }}
+		</p>
+		{% endfor %}
+	{% endif %}
+
+	{% if user.is_email_activated %}
+		<p>Все хорошо!</p>
+	{% else %}
+		{% if user.is_authenticated %}
+		<p>
+			Чтобы подписаться на рассылку изменений по этой квартире, подтвердите адрес электронной почты. <br>
+			На указанный при регистрации e-mail: "{{ user.email }}" Вам отправлено письмо с инструкциями. <br>
+			<a class="underline" href="{% url 'repeat-send-email' flat_id=prices.0.flat %}">Отправить e-mail повторно.</a>
+		</p>
+		{% else %}
+			<p>
+			Чтобы подписаться на рассылку изменений по этой квартире, <br>
+			<a class="underline" href="{% url 'login' %}">авторизуйтесь</a> или
+			<a class="underline" href="{% url 'register' %}">зарегистрируйтесь</a> это бесплатно.
+			</p>
+		{% endif %}
+	{% endif %}
+
 {% endblock %}

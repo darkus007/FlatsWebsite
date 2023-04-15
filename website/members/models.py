@@ -7,6 +7,8 @@ from website.utilites import slugify
 
 
 class FlatsUser(AbstractUser):
+    email = models.EmailField(blank=False, unique=True, verbose_name="Адрес электронной почты")
+    is_email_activated = models.BooleanField(default=False, verbose_name='Прошел активацию?')
     send_email = models.BooleanField(default=False, verbose_name="Подписка на рассылку почты")
 
     class Meta:
