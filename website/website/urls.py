@@ -21,4 +21,7 @@ handler404 = 'flats.views.page_not_found'
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('flats.urls')),
+    path('members/', include('members.urls')),
+    path('members/', include('django.contrib.auth.urls')),
+    path('captcha/', include('captcha.urls')),
 ]

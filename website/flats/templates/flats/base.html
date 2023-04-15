@@ -13,7 +13,14 @@
 	<div id="header">
 		<div id="logo">
 			<h1><a href="{% url 'index' %}">Сайт по подбору квартир</a></h1>
-			<p>Найди свою квартиру здесь!</p>
+<!--			<div class="d-flex">-->
+				<div class="me-auto p-2"><p>Найди свою квартиру здесь!</p></div>
+<!--				{% if user.is_authenticated %}-->
+<!--				<div class="p-2"><p>{{ user.username }}</p></div>-->
+<!--				{% else %}-->
+<!--				<div class="p-2"><p><a href="{% url 'login' %}">Войти</a></p></div>-->
+<!--				{% endif %}-->
+<!--			</div>-->
 		</div>
 	</div>
 	</div>
@@ -36,8 +43,24 @@
 		<div id="sidebar">
 			<ul>
 				<li>
+					{% if user.is_authenticated %}
+					<h2>Личный кабинет</h2>
+					<h6>{{ user.first_name }} {{ user.last_name }}</h6>
+					<ul>
+						<li><a href="{% url 'index' %}">Выбранные квартиры</a></li>
+						<li><a href="{% url 'password-change' %}">Сменить пароль</a></li>
+						<li><a href="{% url 'logout' %}">Выйти</a></li>
+					</ul>
+					{% else %}
 					<h2>О сайте</h2>
-					<p>Информация о квартирах собрана из источников в открытом доступе и представлена на данном сайте для удобного выбора в одном месте.</p>
+					<p>Информация о квартирах собрана из источников в открытом доступе и представлена на данном сайте
+						для удобного выбора в одном месте. <br>Зарегистрированные пользователи могут подписаться на рассылку
+					изменений по выбранным квартирам.</p>
+					<div class="link d-flex justify-content-between">
+						<a href="{% url 'register' %}">Регистрация</a>
+						<a href="{% url 'login' %}">Войти</a>
+					</div>
+					{% endif %}
 				</li>
 				<li>
 					<h2>Застройщики</h2>

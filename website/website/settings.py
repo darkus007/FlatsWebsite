@@ -27,6 +27,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
+# Переопределяем модель пользователя
+AUTH_USER_MODEL = "members.FlatsUser"
+
+# Настраиваем переадресацию после регистрации и выхода пользователя
+LOGIN_REDIRECT_URL = 'index'
+LOGOUT_REDIRECT_URL = 'index'
+
 
 # Application definition
 
@@ -40,8 +47,10 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
 
     "debug_toolbar",
+    "captcha",
 
     'flats.apps.FlatsConfig',
+    'members.apps.MembersConfig',
 ]
 
 MIDDLEWARE = [
@@ -63,7 +72,7 @@ ROOT_URLCONF = 'website.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['members/templates/', ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

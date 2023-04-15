@@ -1,0 +1,26 @@
+{% extends 'flats/base.html' %}
+
+{% block content %}
+    <br>
+    <h3>Войдите или зарегистрируйтесь</h3>
+    <br>
+    <div class="form-group">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form_error">{{ form.non_field_errors }}</div>
+            <div class="mb-3 px-2">
+                <label class="form-label">Логин</label>
+                <input type="text" class="form-control" name="username" aria-describedby="emailHelp" required>
+            </div>
+            <div class="mb-3 px-2">
+                <label class="form-label">Пароль</label>
+                <input type="password" class="form-control" name="password" required>
+            </div>
+            <button class="btn btn-dark bg-gradient">Войти</button>
+            <a href="{% url 'password_reset' %}" class="link-dark px-4">Забыли пароль?</a>
+        </form>
+    </div>
+    <br>
+    <div> Вы не зарегистрированы? Регистрация <a href="{% url 'register' %}" class="link-dark">ТУТ...</a></div>
+
+{% endblock %}

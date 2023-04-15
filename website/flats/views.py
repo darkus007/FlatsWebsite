@@ -6,7 +6,7 @@ from flats.models import Flat, Price, AllFlatsLastPrice
 
 class IndexList(ListView):
     model = Flat
-    template_name = 'flats/table_cls.html'
+    template_name = 'flats/table.html'
     context_object_name = 'flats'  # вместо objects_list
     paginate_by = 50
 
@@ -39,7 +39,7 @@ class FlatDetailView(DetailView):
 
 class ProjectListView(ListView):
     model = Flat
-    template_name = 'flats/table_cls.html'
+    template_name = 'flats/table.html'
     context_object_name = 'flats'  # вместо objects_list
     paginate_by = 50
 
