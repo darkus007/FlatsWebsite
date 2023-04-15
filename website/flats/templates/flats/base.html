@@ -47,7 +47,7 @@
 					<h2>Личный кабинет</h2>
 					<h6>{{ user.first_name }} {{ user.last_name }}</h6>
 					<ul>
-						<li><a href="{% url 'index' %}">Выбранные квартиры</a></li>
+						<li><a href="{% url 'user-choice' user.id %}">Выбранные квартиры</a></li>
 						<li><a href="{% url 'password-change' %}">Сменить пароль</a></li>
 						<li><a href="{% url 'logout' %}">Выйти</a></li>
 					</ul>

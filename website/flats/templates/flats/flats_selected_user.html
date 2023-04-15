@@ -1,0 +1,59 @@
+{% extends 'flats/base.html' %}
+
+{% load humanize %}
+
+{% block content %}
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th scope="col">Город, ЖК,<br>На сайт застройщика</th>
+        <th scope="col">Комнат,<br>Площадь,<br>Этаж</th>
+        <th scope="col">Бронь</th>
+        <th scope="col">Цена</th>
+        <th scope="col">Заселение</th>
+        <th scope="col">Адрес,<br>Подробно о квартире</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    {% for flat in flats %}
+    <tr>
+        <th scope="row"><a target="_blank" href="{{ flat.url }}{{ flat.url_suffix }}">{{ flat.city }},<br>{{ flat.name }}</a></th>
+        <td>{% if flat.rooms == -1 %}
+            Студия,
+            {% else %}
+            {{ flat.rooms }} к,
+            {% endif %}
+            <br> {{ flat.area }} м,
+            <br> {{ flat.floor }} этаж
+        </td>
+
+        <td>{% if flat.booking_status == 'reserve' %}
+            Бронь
+            {% elif flat.booking_status == 'active' %}
+            Свободна
+            {% else %}
+            {{ flat.booking_status }}
+            {% endif %}
+        </td>
+        <td width="80">{{ flat.price|intcomma }} руб.</td>
+        <td>{% if flat.settlement_date %}
+            {{ flat.settlement_date|date:"d-m-Y" }}
+            {% else %}
+            Не указано
+            {% endif %}
+        </td>
+        <td><a href="{{ flat.get_absolute_url }}">{{ flat.address|truncatewords:7 }}
+            {% if flat.finishing %}
+                С отделкой.
+            {% else %}
+                Без отделки.
+            {% endif %}
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

@@ -63,7 +63,14 @@
 	{% endif %}
 
 	{% if user.is_email_activated %}
-		<p>Все хорошо!</p>
+		<form action="{% url 'select-flat' prices.0.flat %}" method="post">
+			{% csrf_token %}
+			{% if chose %}
+				<button type="submit" name="flat_id" value="{{ prices.0.flat }}" class="btn btn-secondary bg-gradient">Больше не отслеживать</button>
+			{% else %}
+				<button type="submit" name="flat_id" value="{{ prices.0.flat }}" class="btn btn-success">Отслеживать изменения по этой квартире</button>
+			{% endif %}
+		</form>
 	{% else %}
 		{% if user.is_authenticated %}
 		<p>
