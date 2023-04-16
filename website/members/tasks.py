@@ -6,7 +6,7 @@ from website.celery import app
 
 
 @app.task
-def task_send_mail(subject: str, message: str, from_email: str = None, **kwargs) -> None:
+def task_send_mail(subject: str, message: str, from_email: str = None, **kwargs) -> int:
     return send_mail(subject, message, from_email, **kwargs)
 
 
