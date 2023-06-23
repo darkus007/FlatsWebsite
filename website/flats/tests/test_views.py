@@ -182,22 +182,9 @@ class IndexListTestCase(ViewsTestSettings):
 
 class FlatDetailViewTestCase(ViewsTestSettings):
     def test_view(self):
-        expected_data = {'address': 'City', 'rooms': 3, 'area': 84.0, 'floor': 13, 'finishing': True,
-                         'settlement_date': date(2023, 4, 4), 'url_suffix': '/flats/647794',
-                         'project__name': 'City', 'project__url': 'https://www.pik.ru/ms'}
         response = self.client.get(reverse('flat-detail', kwargs={'flatid': 647794}))
         self.assertTrue(response.context.get('flats'))    # object_list переопределен на flats и не пуст
-        self.assertEqual(response.context.get('flats'), expected_data)
-
-    def test_view_context(self):
-        expected_data = {'flat': 647794, 'data_created': date(2023, 4, 4), 'price': 5000000,
-                         'booking_status': 'active', 'benefit_name': 'Ипотека 1%',
-                         'benefit_description': 'Первый взнос — от 15%, ставка — 1%, '
-                                                'срок — до 30 лет, сумма кредита — до 30 млн ₽'}
-        response = self.client.get(reverse('flat-detail', kwargs={'flatid': 647794}))
-        self.assertTrue(response.context.get('flats'))    # object_list переопределен на flats и не пуст
-        self.assertTrue(response.context.get('prices'))    # контекст на prices и не пуст
-        # self.assertEqual(response.context.get('prices')[0], expected_data)
+        self.assertEqual(response.context.get('flats').pk, 647794)
 
     def test_queries(self):
         """ Тестируем количество запросов в БД. """

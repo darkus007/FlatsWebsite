@@ -4,7 +4,7 @@
 {% load filters %}
 
 {% block content %}
-	<h1>{{ flats.project__name }}</h1>
+	<h1>{{ flats.project.name }}</h1>
 	<br>
 	<p>{{ flats.address }}.</p>
 	<p>{% if flats.rooms == -1 %}
@@ -23,7 +23,7 @@
     <div class="cls-button">
 		<a onclick="javascript:history.back(); return false;"><< Предыдущая страница</a>
 		<div class="space"></div>
-		<a target="_blank" href="{{ flats.project__url }}{{ flats.url_suffix }}">Смотреть на сайте застройщика >></a>
+		<a target="_blank" href="{{ flats.project.url }}{{ flats.url_suffix }}">Смотреть на сайте застройщика >></a>
 	</div>
 	<br><br>
 
@@ -40,7 +40,7 @@
 	  </thead>
 	  <tbody>
 
-	  	{% for price in prices %}
+	  	{% for price in flats.prices.all %}
 		<tr>
 		  <th scope="row" width="80">{{ price.data_created|date:"d-m-Y" }}</th>
 		  <td>{{ price.price|intcomma }} руб.</td>
@@ -63,12 +63,12 @@
 	{% endif %}
 
 	{% if user.is_email_activated %}
-		<form action="{% url 'select-flat' prices.0.flat %}" method="post">
+		<form action="{% url 'select-flat' flats.pk %}" method="post">
 			{% csrf_token %}
 			{% if chose %}
-				<button type="submit" name="flat_id" value="{{ prices.0.flat }}" class="btn btn-secondary bg-gradient">Больше не отслеживать</button>
+				<button type="submit" name="flat_id" value="{{ flats.pk }}" class="btn btn-secondary bg-gradient">Больше не отслеживать</button>
 			{% else %}
-				<button type="submit" name="flat_id" value="{{ prices.0.flat }}" class="btn btn-success">Отслеживать изменения по этой квартире</button>
+				<button type="submit" name="flat_id" value="{{ flats.pk }}" class="btn btn-success">Отслеживать изменения по этой квартире</button>
 			{% endif %}
 		</form>
 	{% else %}
@@ -76,7 +76,7 @@
 		<p>
 			Чтобы подписаться на рассылку изменений по этой квартире, подтвердите адрес электронной почты. <br>
 			На указанный при регистрации e-mail: "{{ user.email }}" Вам отправлено письмо с инструкциями. <br>
-			<a class="underline" href="{% url 'repeat-send-email' flat_id=prices.0.flat %}">Отправить e-mail повторно.</a>
+			<a class="underline" href="{% url 'repeat-send-email' flat_id=flats.pk %}">Отправить e-mail повторно.</a>
 		</p>
 		{% else %}
 			<p>

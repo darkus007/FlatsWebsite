@@ -37,25 +37,20 @@ class FlatDetailView(DetailView):
     pk_url_kwarg = 'flatid'
 
     def get_queryset(self):
-        return Flat.objects.values(
+        return Flat.objects.select_related('project').only(
             'address', 'rooms', 'area', 'floor', 'finishing', 'settlement_date', 'url_suffix',
-            'project__name', 'project__url'
+            'project__name', 'project__url',
         ).filter(pk=self.kwargs['flatid'])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['prices'] = Price.objects.values(
-            'flat', 'data_created',
-            'price', 'booking_status',
-            'benefit_name', 'benefit_description'
-        ).filter(flat=self.kwargs['flatid']).order_by('-data_created')
-
-        total_selected = SelectedFlat.objects.filter(flat_id=self.kwargs['flatid']).count()
-        chose_this_user = SelectedFlat.objects.filter(Q(flats_user=self.request.user.id) &
-                                                      Q(flat_id=self.kwargs['flatid'])
-                                                      ).exists()    # True если нет False
-        context["total_selected"] = total_selected
-        context["chose"] = chose_this_user
+        if self.request.user.id:
+            total_selected = SelectedFlat.objects.filter(flats_user=self.request.user.id).count()
+            chose_this_user = SelectedFlat.objects.filter(Q(flats_user=self.request.user.id) &
+                                                          Q(flat_id=self.kwargs['flatid'])
+                                                          ).exists()    # True если нет False
+            context["total_selected"] = total_selected
+            context["chose"] = chose_this_user
         return context
 
 
@@ -91,7 +86,7 @@ def add_flat_to_selected(request, flat_id):
             return HttpResponseRedirect(reverse('flat-detail', kwargs={'flatid': flat_id}))
 
         flat = Flat.objects.get(flat_id=request.POST.get('flat_id'))
-        data_created = Price.objects.values('data_created').get(flat=flat_id)
+        data_created = Price.objects.values('data_created').filter(flat=flat_id).first()
         SelectedFlat.objects.create(
             flats_user=request.user,
             flat_id=flat,

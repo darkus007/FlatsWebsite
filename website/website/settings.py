@@ -154,15 +154,17 @@ INTERNAL_IPS = [
 
 
 # настраиваем отправку писем
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # выводит в командной строке
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # отправляет на почтовый сервер
-DEFAULT_FROM_EMAIL = 'flats@mail.ru'
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = 1025
-# EMAIL_HOST_USER = 'user'                                         # логин для SMTP-сервера, по умолчанию пустая строка
-# EMAIL_HOST_PASSWORD = 'password'                                 # пароль для SMTP-сервера, по умолчанию пустая строка
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # выводит в командной строке
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # отправляет на почтовый сервер
+DEFAULT_FROM_EMAIL = getenv('DEFAULT_FROM_EMAIL')
+EMAIL_HOST = getenv('EMAIL_HOST')
+EMAIL_PORT = getenv('EMAIL_PORT')
+EMAIL_USE_TLS = getenv('EMAIL_USE_TLS')
+EMAIL_USE_SSL = getenv('EMAIL_USE_SSL')
+EMAIL_HOST_USER = getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = getenv('EMAIL_HOST_PASSWORD')
 ADMINS = [  # админы, которым будут отправлены письма методом mail_admins
-    ('admin', 'admin@mail.ru'),
+    ('admin', ),
 ]
 SERVER_EMAIL = 'flats_from@email.ru'  # адрес почты с которой будут отправлены письма
 
