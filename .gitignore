@@ -6,3 +6,6 @@ setenv.sh
 *.log
 *.db
 *.sqlite3
+.env
+website/static/*
+favicon_io.zip
