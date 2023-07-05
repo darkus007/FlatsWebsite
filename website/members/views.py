@@ -1,8 +1,10 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.views import PasswordChangeView
-from django.views.generic import CreateView, UpdateView, DetailView, TemplateView
+from django.views.decorators.http import require_GET
+from django.views.generic import CreateView, UpdateView, TemplateView
 from django.urls import reverse_lazy, reverse
 from django.core.signing import BadSignature
 from django.contrib import messages
@@ -29,10 +31,11 @@ class RegisterDoneView(TemplateView):
     template_name = 'billboard/register_done.html'
 
 
-class UserChangeView(UpdateView):
+class UserChangeView(LoginRequiredMixin, UpdateView):
     form_class = EditUserForm
     template_name = 'registration/register_or_edit_user.html'
     success_url = reverse_lazy('home')
+    login_url = reverse_lazy('login')
 
     def get_object(self, queryset=None):
         """
@@ -49,15 +52,18 @@ class UserChangeView(UpdateView):
         return context
 
 
-class UserPasswordChangeView(PasswordChangeView):
+class UserPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
     form_class = UserPasswordChangeForm
     success_url = reverse_lazy('password_changed')
+    login_url = reverse_lazy('login')
 
 
+@require_GET
 def password_changed(request):
     return render(request, 'registration/password_changed.html')
 
 
+@require_GET
 def user_email_activate(request, sign):
     """
     Функция для активации e-mail пользователя.
@@ -78,7 +84,7 @@ def user_email_activate(request, sign):
     return render(request, template)
 
 
-@login_required
+@login_required(login_url=reverse_lazy('login'))
 def send_email_activate_letter(request, flat_id):
     """
     По запросу пользователя повторно отправляет письмо для подтверждения e-mail

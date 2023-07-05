@@ -139,6 +139,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = path.join(BASE_DIR, 'static/')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -166,7 +167,7 @@ EMAIL_HOST_PASSWORD = getenv('EMAIL_HOST_PASSWORD')
 ADMINS = [  # админы, которым будут отправлены письма методом mail_admins
     ('admin', ),
 ]
-SERVER_EMAIL = 'flats_from@email.ru'  # адрес почты с которой будут отправлены письма
+SERVER_EMAIL = getenv('DEFAULT_FROM_EMAIL')  # адрес почты с которой будут отправлены письма
 
 
 # настраиваем логирование
@@ -229,10 +230,6 @@ LOGGING = {
             'handlers': ['file'],
             'propagate': True,
         },
-        # 'django.db.backends': {      # собирает сообщения обо всех операциях с базой данных сайта
-        #     'handlers': ['console_dev'],
-        #     'level': 'DEBUG',       # DEBUG - по умолчанию
-        # }
 
         # добавлен регистратора, который объявлен в файле flats/middleware.py
         # logger = logging.getLogger(__name__), где __name__ = 'flats.middlewares'

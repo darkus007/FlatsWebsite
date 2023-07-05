@@ -39,7 +39,7 @@ class MiddlewaresTestsCase(TestCase):      # python manage.py test flats.tests.t
     def test_projects_cache(self):
         with CaptureQueriesContext(connection) as queries:
             cache.delete('projects')    # может сохраниться от предыдущих запросов
-            projects(None)
-            projects(None)
+            projects(None)              # выполняем функцию, которая кеширует данные
+            projects(None)              # выполняем несколько раз
             projects(None)
             self.assertEqual(len(queries), 1, "Кэширование не работает!")

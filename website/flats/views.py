@@ -1,8 +1,9 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q, ObjectDoesNotExist, Subquery
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView
 
 from .models import Flat, Price, AllFlatsLastPrice
@@ -19,10 +20,11 @@ class IndexList(ListView):
         return AllFlatsLastPrice.objects.all()
 
 
-class SelectedFlatList(ListView):
+class SelectedFlatList(LoginRequiredMixin, ListView):
     model = Flat
     template_name = 'flats/flats_selected_user.html'
     context_object_name = 'flats'  # вместо objects_list
+    login_url = reverse_lazy('login')
 
     def get_queryset(self):
         sq = Subquery(SelectedFlat.objects.filter(flats_user=self.kwargs['user_id']).values('flat_id'))
@@ -33,7 +35,6 @@ class FlatDetailView(DetailView):
     model = Flat
     template_name = 'flats/flat_detail.html'
     context_object_name = 'flats'
-    # slug_url_kwarg = 'flatslug'
     pk_url_kwarg = 'flatid'
 
     def get_queryset(self):

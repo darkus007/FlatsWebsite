@@ -28,6 +28,8 @@ class ViewsTestSettings(TestCase):     # python manage.py test flats.tests.test_
 
         cls.user = get_user_model().objects.create_user(username='test_user', password='test_user_password')
         cls.client = Client()
+        cls.auth_client = Client()
+        cls.auth_client.force_login(cls.user)
 
         cls.project = Project.objects.create(
             project_id=1,
@@ -218,3 +220,20 @@ class ProjectListViewTestCase(ViewsTestSettings):
             response = self.client.get(reverse('project-list', kwargs={'project_id': 1}))
             self.assertEqual(response.status_code, 200)
             self.assertEqual(len(queries), 3, "Увеличилось число запросов в БД!")
+
+
+class SelectedFlatListViewTestCase(ViewsTestSettings):
+
+    def test_selected_flat_list_get_page_not_logged(self):
+        response = self.client.get(reverse('user-choice', kwargs={'user_id': self.user.id}))
+        self.assertRedirects(response,
+                             expected_url=f'/members/login/?next=/user-choice/{self.user.id}/',
+                             status_code=302,
+                             target_status_code=200,
+                             fetch_redirect_response=True)
+
+    def test_selected_flat_list_get_page_logged(self):
+        response = self.auth_client.get(reverse('user-choice', kwargs={'user_id': self.user.id}))
+        # Проверка, что пользователь залогинился
+        self.assertEqual(str(response.context['user']), self.user.username)
+        self.assertEqual(response.status_code, 200)
