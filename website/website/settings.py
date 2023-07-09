@@ -48,9 +48,11 @@ INSTALLED_APPS = [
 
     "debug_toolbar",
     "captcha",
+    'rest_framework',
 
     'flats.apps.FlatsConfig',
     'members.apps.MembersConfig',
+    'api.apps.ApiConfig',
 ]
 
 MIDDLEWARE = [
@@ -265,3 +267,28 @@ CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+
+
+# настройка Django REST framework
+# https://www.django-rest-framework.org/
+REST_FRAMEWORK_PAGINATION_MAX_SIZE = 50
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        # Similar to DjangoModelPermissions, but also allows unauthenticated users
+        # to have read-only access to the API.
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ],
+
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': REST_FRAMEWORK_PAGINATION_MAX_SIZE,
+
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '50/day',
+        'user': '1000/day'
+    }
+}

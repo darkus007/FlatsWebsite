@@ -11,6 +11,8 @@ Django==4.1.5
 django-ranged-response==0.2.0
 django-simple-captcha==0.5.17
 django_debug_toolbar==3.8.1
+djangorestframework==3.14.0
+gunicorn==20.1.0
 kombu==5.2.4
 Pillow==9.5.0
 prompt-toolkit==3.0.38

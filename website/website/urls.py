@@ -16,8 +16,6 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from flats.tasks import task_send_flat_changes
-
 handler404 = 'flats.views.page_not_found'
 
 urlpatterns = [
@@ -26,5 +24,6 @@ urlpatterns = [
     path('members/', include('members.urls')),
     path('members/', include('django.contrib.auth.urls')),
     path('captcha/', include('captcha.urls')),
-    path('test/', task_send_flat_changes)
+    path('api/v1/', include('api.urls')),
+    path('api/v1/auth/', include('rest_framework.urls')),
 ]
