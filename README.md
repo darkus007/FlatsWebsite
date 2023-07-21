@@ -1,23 +1,31 @@
-# FlatsWebsite v.1.0
+# FlatsWebsite v.1.1
 Сайт по подбору квартир. Часть проекта Flats, в который также входят [FlatsScrapper](https://github.com/darkus007/FlatsScrapper) - сервис по сбору информации с сайтов застройщиков и наполнению базы данных.
 FlatsTelegramBot - позволяет получать информацию о квартирах в мессенджере Telegram.
 
 Данный проект написан на Django. Реализован просмотр квартир в виде таблиц, с сортировкой по жилым комплексам. \
-На сайте можно зарегистрироваться и после подтверждения e-mail получать уведомления об изменении цены или статуса 
+На сайте можно зарегистрироваться и после подтверждения e-mail получать на почту уведомления об изменении цены или статуса 
 по выбранным квартирам. \
 Настроено логирование и кэширование, отправка писем администратору об ошибках на сайте, оптимизированы ORM запросы, 
-написан фильтр и middlewares для пополнения контекста шаблона и обработки исключений.
+написан фильтр и middlewares для пополнения контекста шаблона и обработки исключений. \
+Письма отправляются с использованием [Celery](https://docs.celeryq.dev/en/stable/). \
+Весь функционал сайта также доступен через REST API, которое разработано с применением [Django REST framework](https://www.django-rest-framework.org).
+
+Написан `docker-compose.yml` который упаковывает и запускает приложение в контейнере используя [Nginx](https://nginx.org/ru/) + [Gunicorn](https://gunicorn.org/).
 
 При разработке приложения использованы следующие основные пакеты, фреймворки и технологии: \
 [Django](https://pypi.org/project/Django/); \
+[Django REST framework](https://www.django-rest-framework.org); \
+[Celery](https://docs.celeryq.dev/en/stable/); \
+[Django Simple Captcha](https://pypi.org/project/django-simple-captcha/); \
 [Django Debug Toolbar](https://pypi.org/project/django-debug-toolbar/); \
 [Bootstrap](https://bootstrap-4.ru/); \
-[Docker](https://www.docker.com/). \
+[Docker](https://www.docker.com/).
+
 Полный список в фале `requirements.txt`.
 
-База данных [PostgreSQL](https://www.postgresql.org/).
+Базы данных [PostgreSQL](https://www.postgresql.org/) и [Redis](https://redis.io/) в качестве брокера сообщений для Celery.
 
-### Описание Models
+### Описание Models приложения flats
 > Projects - таблица с информацией о жилых комплексах.
 >> project_id - уникальный идентификатор, совпадает с id застройщика.\
 >> city - город.\
@@ -92,28 +100,32 @@ WHERE prices.data_created = last_price.max_data;
 
 ## Установка и запуск
 Приложение написано на [Python v.3.11](https://www.python.org). \
-Скачайте FlatsWebsite на Ваше устройство любым удобным способом (например Code -> Download ZIP, распакуйте архив). \
+Скачайте FlatsWebsite на Ваше устройство любым удобным способом (например Code -> Download ZIP, распакуйте архив 
+или выполните `git clone https://github.com/darkus007/FlatsWebsite.git`). \
 Установите [Docker](https://www.docker.com/), если он у Вас еще не установлен.
 
 ### Настройка приложения
 
-Откройте файл `env.dev` и измените значения переменных окружения на свои: \
-`SECRET_KEY` - секретный ключ Django \
-`DJANGO_SUPERUSER_PASSWORD` - пароль супер пользователя \
-`DJANGO_SUPERUSER_EMAIL` - email супер пользователя \
-`DJANGO_SUPERUSER_USERNAME` - login супер пользователя \
-`POSTGRES_DB` - название базы данных (совпадает с `POSTGRES_DB` файла `docker-compose.yml`) \
-`POSTGRES_USER` - пользователь базы данных (совпадает с `POSTGRES_USER` файла `docker-compose.yml`) \
-`POSTGRES_PASSWORD` - пароль пользователя базы данных (совпадает с `POSTGRES_PASSWORD` файла `docker-compose.yml`) \
+Откройте файл `.env` и измените значения переменных окружения на свои: \
+`SECRET_KEY` - секретный ключ Django; \
+`DJANGO_SUPERUSER_PASSWORD` - пароль супер пользователя; \
+`DJANGO_SUPERUSER_EMAIL` - email супер пользователя; \
+`DJANGO_SUPERUSER_USERNAME` - login супер пользователя; \
+`POSTGRES_DB` - название базы данных (совпадает с `POSTGRES_DB` файла `docker-compose.yml`); \
+`POSTGRES_USER` - пользователь базы данных (совпадает с `POSTGRES_USER` файла `docker-compose.yml`); \
+`POSTGRES_PASSWORD` - пароль пользователя базы данных (совпадает с `POSTGRES_PASSWORD` файла `docker-compose.yml`); \
+`DEFAULT_FROM_EMAIL` - адрес отправителя по умолчанию (от кого придет письмо пользователю). \
+Настройки почты, зависят от Вашего провайдера, эти настройки Вы можете получить у него: \
+`EMAIL_HOST` - хост; \
+`EMAIL_PORT` - порт; \
+`EMAIL_HOST_USER` - пользователь; \
+`EMAIL_HOST_PASSWORD` - пароль.
 
-Отредактируйте значения переменных окружения файла `docker-compose.yml` \
-`POSTGRES_DB` - название базы данных (совпадает с `POSTGRES_DB` файла `env.dev`) \
-`POSTGRES_USER` - пользователь базы данных (совпадает с `POSTGRES_USER` файла `env.dev`) \
-`POSTGRES_PASSWORD` - пароль пользователя базы данных (совпадает с `POSTGRES_PASSWORD` файла `env.dev`)
+!!! Приложение запустится без корректировки и изменения указанных в данном разделе настроек, для теста можно их оставить без изменений !!!
 
-!!! Приложение запустится без корректировки и изменения указанных в данном разделе файлов (`settings.py`, `env.dev` и `docker-compose.yml`)
-
-#### Запуск в контейнере Docker (используя отладочный сервер)
-Откройте терминал, перейдите в каталог с приложением (cd <путь к приложению>/FlatsWebsite). \
+#### Запуск в контейнере Docker
+Откройте терминал, перейдите в каталог с приложением (`cd <путь к приложению>/FlatsWebsite`). \
 Выполните команду `docker-compose up -d --build`. Дождитесь сборки и запуска контейнеров. \
-Откройте любимый Веб-браузер и перейдите по адресу http://127.0.0.1:8000/ 
+Выполните скрипт `. ./create_sql_view.bash` он создаст представление `all_flats_last_price` в контейнере, необходимое для работы приложения.
+(При необходимости дайте скрипту права на запуск выполнив `sudo chmod +x create_sql_view.bash`).
+Откройте любимый Веб-браузер и перейдите по адресу http://127.0.0.1/

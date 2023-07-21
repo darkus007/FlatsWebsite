@@ -162,8 +162,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # отправл�
 DEFAULT_FROM_EMAIL = getenv('DEFAULT_FROM_EMAIL')
 EMAIL_HOST = getenv('EMAIL_HOST')
 EMAIL_PORT = getenv('EMAIL_PORT')
-EMAIL_USE_TLS = getenv('EMAIL_USE_TLS')
-EMAIL_USE_SSL = getenv('EMAIL_USE_SSL')
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
 EMAIL_HOST_USER = getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = getenv('EMAIL_HOST_PASSWORD')
 ADMINS = [  # админы, которым будут отправлены письма методом mail_admins
@@ -257,8 +257,8 @@ CACHES = {
 
 
 # настройки Celery и Radis
-# REDIS_HOST = 'redis'  # в докер контейнере
-REDIS_HOST = '0.0.0.0'  # локально
+REDIS_HOST = 'redis'  # в докер-контейнере
+# REDIS_HOST = '0.0.0.0'  # локально
 REDIS_PORT = '6379'
 
 CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'

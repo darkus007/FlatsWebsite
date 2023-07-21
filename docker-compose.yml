@@ -1,29 +1,70 @@
 version: "3.8"
 
+name: flats-website
+
 services:
+
+  nginx:
+    build: ./nginx
+    container_name: flats_nginx
+    restart: always
+    volumes:
+      - flats_static:/website/static
+    ports:
+      - "80:80"
+    depends_on:
+      - website
 
   website:
     build: .
     container_name: flats_website
-    command: python manage.py runserver 0.0.0.0:8000
-    ports:
-      - "8000:8000"
+    command: gunicorn --bind 0.0.0.0:8000 website.wsgi
+    restart: always
+    volumes:
+      - flats_static:/website/static
     env_file:
-      - env.dev
+      - .env
     depends_on:
       - postgres_db
 
+  worker:
+    build:
+      dockerfile: 'Dockerfile.Celery'
+    container_name: flats_worker
+    command: celery -A website worker -l INFO
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - website
+      - redis
+
+  beat:
+    build:
+      dockerfile: 'Dockerfile.Celery'
+    container_name: flats_beat
+    command: celery -A website beat -l INFO
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - website
+      - redis
+
   postgres_db:
     image: postgres:15.2-alpine
-    container_name: postgres_flats
+    container_name: flats_postgres
     restart: always
     volumes:
-      - ./init_tables_and_view.sql:/docker-entrypoint-initdb.d/init_tables_and_view.sql
-      - volume_flats:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - flats_database:/var/lib/postgresql/data/
+    env_file:
+      - .env
+
+  redis:
+    image: redis
+    container_name: flats_redis
+    restart: always
 
 volumes:
-  volume_flats:
+  flats_database:
+  flats_static:
