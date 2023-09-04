@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "debug_toolbar",
     "captcha",
     'rest_framework',
+    'drf_yasg',
 
     'flats.apps.FlatsConfig',
     'members.apps.MembersConfig',
